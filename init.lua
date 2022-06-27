@@ -1,46 +1,31 @@
 letters = {}
 letters.modpath = minetest.get_modpath("letters")
 
-
-
 --- FORMSPEC GENERATION AND HANDLING ---
-
 
 function display_formspec(name, pos)
 	local pos_string = tostring(pos.x) .. "," .. tostring(pos.y) .. "," .. tostring(pos.z)
 	minetest.show_formspec(name, "letters:formspec" .. pos_string, "formspec_version[3]size[5,3]field[1,1;3,1;x;Zeichen oder Text;]")
 end
 
-
 minetest.register_on_player_receive_fields(
 	function(player, formname, fields)
-
 		if string.sub(formname,1,16) == "letters:formspec" and fields.x then
-
 			x, y, z = string.match(string.sub(formname,17), "([-]?%d+),([-]?%d+),([-]?%d+)")
-
 			if x ~= nil and y ~= nil and z ~= nil then
 				set_letter(player, vector.new(tonumber(x),tonumber(y),tonumber(z)), string.lower(fields.x))
 			end
-
 		end
-
 	end
 )
 
-
-
 --- NODE PLACEMENT FUNCTION ---
 
-
 function set_letter(player, pos, text)
-
 	if text == nil or text == "" or minetest.is_protected(pos, player:get_player_name()) or string.sub(minetest.get_node(pos).name, 1, 8) ~= "letters:" then
 		return
 	end
-    
 	local face_param = minetest.get_node(pos).param2
-
 	if letter_table[string.sub(text,1,1)] ~= nil then
 		minetest.set_node(pos, {name="letters:" .. letter_table[string.sub(text,1,1)], param2=face_param})
 	else
@@ -59,16 +44,11 @@ function set_letter(player, pos, text)
 	end
 	
 	set_letter(player, next_pos, string.sub(text, 2))
-
 end
-
-
 
 --- REGISTER NODES ---
 
-
 letter_table = {}
-
 
 function register_letter(name, symbol)
 	minetest.register_node("letters:" .. name, {
@@ -89,7 +69,6 @@ function register_letter(name, symbol)
 	})
 	letter_table[symbol] = name
 end
- 
 
 -- letter
 minetest.register_node("letters:letter", {
@@ -111,25 +90,21 @@ minetest.register_node("letters:letter", {
 	end
 })
 
-
 minetest.register_craft({
 	type = "shapeless",
 	output = "letters:letter 1",
 	recipe = { "dye:black", "dye:black", "dye:black", "dye:black" }
 })
 
-
 -- alphabet
 for c=string.byte("a"),string.byte("z") do
 	register_letter(string.char(c), string.char(c))
 end
 
-
 -- digit
 for i=0,9 do
 	register_letter(tostring(i), tostring(i))
 end
-
 
 -- punctuation
 register_letter("comma", ",")
