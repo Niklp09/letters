@@ -1,5 +1,8 @@
 letters = {}
 letters.modpath = minetest.get_modpath("letters")
+local x
+local y
+local z
 
 --- FORMSPEC GENERATION AND HANDLING ---
 
