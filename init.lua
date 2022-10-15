@@ -1,12 +1,10 @@
 letters = {}
 letters.modpath = minetest.get_modpath("letters")
-local x
-local y
-local z
+local x, y, z
 
 --- FORMSPEC GENERATION AND HANDLING ---
 
-function display_formspec(name, pos)
+local function display_formspec(name, pos)
 	local pos_string = tostring(pos.x) .. "," .. tostring(pos.y) .. "," .. tostring(pos.z)
 	minetest.show_formspec(name, "letters:formspec" .. pos_string, "formspec_version[3]size[5,3]field[1,1;3,1;x;Zeichen oder Text;]")
 end
@@ -53,7 +51,7 @@ end
 
 letter_table = {}
 
-function register_letter(name, symbol)
+local function register_letter(name, symbol)
 	minetest.register_node("letters:" .. name, {
 		drawtype            = "signlike",
 		tiles               = {name .. ".png"},
